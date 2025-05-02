@@ -74,9 +74,8 @@ export default function Contact() {
   };
 
   const handleDownloadCV = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    // In a real application, this would trigger a download of the CV file
-    alert("CV download would be triggered here");
+    // We don't prevent default here as we want the download to occur naturally
+    // The href attribute will handle the download
   };
 
   return (
