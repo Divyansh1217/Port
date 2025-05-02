@@ -1,19 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/public",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": null,
-  "functions": {
-    "api/*.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
+  "builds": [
+    { "src": "package.json", "use": "@vercel/node" }
+  ],
   "routes": [
+    { "src": "/api/(.*)", "dest": "/dist/index.js" },
     { "handle": "filesystem" },
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/(.*)", "dest": "/dist/public/index.html" }
   ]
 }
