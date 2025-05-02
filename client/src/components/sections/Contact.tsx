@@ -39,11 +39,19 @@ export default function Contact() {
     setIsSubmitting(true);
     
     try {
-      // In a real app, you would send this data to your backend
-      console.log("Form data:", data);
+      // Send data to our API endpoint
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send message');
+      }
       
       toast({
         title: "Message sent!",
@@ -52,9 +60,12 @@ export default function Contact() {
       
       form.reset();
     } catch (error) {
+      console.error("Contact form error:", error);
       toast({
         title: "Error",
-        description: "There was a problem sending your message. Please try again.",
+        description: error instanceof Error 
+          ? error.message 
+          : "There was a problem sending your message. Please try again.",
         variant: "destructive",
       });
     } finally {

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Code, ArrowRight } from "lucide-react";
+import { Code, ArrowRight, Github } from "lucide-react";
 import { useGitHubProjects } from "@/hooks/useGitHubProjects";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,15 +9,17 @@ import { resumeData } from "@/data/resumeData";
 export default function Projects() {
   const { projects, isLoading, error } = useGitHubProjects();
   const [displayedProjects, setDisplayedProjects] = useState<any[]>([]);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (projects && projects.length > 0) {
-      setDisplayedProjects(projects.slice(0, 3));
+      // Initially show first 3 projects, with option to show all 6
+      setDisplayedProjects(showAll ? projects : projects.slice(0, 3));
     } else if (!isLoading && !error) {
       // Fallback to static data if API fails but no error is detected
       setDisplayedProjects(resumeData.projects);
     }
-  }, [projects, isLoading, error]);
+  }, [projects, isLoading, error, showAll]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -69,11 +71,10 @@ export default function Projects() {
             ))}
           </div>
         ) : error ? (
-          // Error state
-          <div className="text-center text-red-500 dark:text-red-400">
-            <p>Failed to load projects. Displaying static projects data.</p>
+          // Error state - fall back to resume data
+          <div>
             <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -84,7 +85,7 @@ export default function Projects() {
             </motion.div>
           </div>
         ) : (
-          // Success state
+          // Success state - show GitHub projects
           <motion.div 
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             variants={containerVariants}
@@ -97,10 +98,23 @@ export default function Projects() {
           </motion.div>
         )}
         
+        {/* Show more/less toggle if we have more than 3 projects */}
+        {projects && projects.length > 3 && (
+          <div className="text-center mt-8">
+            <Button 
+              onClick={() => setShowAll(!showAll)}
+              variant="secondary"
+              className="mx-auto"
+            >
+              {showAll ? "Show Less" : "Show More Projects"}
+            </Button>
+          </div>
+        )}
+        
         <div className="text-center mt-10">
           <Button asChild className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/80 text-white font-medium">
             <a href="https://github.com/Divyansh1217" target="_blank" rel="noopener noreferrer">
-              <Code className="mr-2 h-4 w-4" />
+              <Github className="mr-2 h-4 w-4" />
               View All Projects on GitHub
             </a>
           </Button>
@@ -116,17 +130,24 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, variant }: ProjectCardProps) {
-  // Generate a gradient based on the project name to have different images for projects
+  // Generate a consistent image based on the project name
   const getProjectImageUrl = (name: string) => {
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return `https://source.unsplash.com/500x300/?tech,${hash % 10}`;
+    return `https://source.unsplash.com/500x300/?code,programming,${hash % 15}`;
   };
   
   const imageUrl = project.image || getProjectImageUrl(project.name);
   
+  // Truncate description if too long
+  const description = project.description 
+    ? project.description.length > 120 
+      ? project.description.substring(0, 120) + '...' 
+      : project.description
+    : "No description available.";
+  
   return (
     <motion.div 
-      className="bg-white dark:bg-card rounded-xl shadow-lg overflow-hidden card-hover"
+      className="bg-white dark:bg-card rounded-xl shadow-lg overflow-hidden card-hover h-full flex flex-col"
       variants={variant}
     >
       <div className="h-48 bg-gray-300 dark:bg-gray-700 relative overflow-hidden">
@@ -139,25 +160,22 @@ function ProjectCard({ project, variant }: ProjectCardProps) {
         <h3 className="absolute bottom-3 left-4 text-white text-xl font-semibold font-poppins">{project.name}</h3>
       </div>
       
-      <div className="p-6">
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          {project.description || "No description available."}
+      <div className="p-6 flex-1 flex flex-col">
+        <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1">
+          {description}
         </p>
         
         <div className="flex flex-wrap gap-2 mb-4">
           {project.technologies && project.technologies.map((tech: string, i: number) => (
             <span key={i} className="technology-badge">{tech}</span>
           ))}
-          {!project.technologies && project.language && (
-            <span className="technology-badge">{project.language}</span>
-          )}
         </div>
         
         <a 
           href={project.url || project.html_url} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="inline-flex items-center text-primary dark:text-primary hover:underline font-medium"
+          className="inline-flex items-center text-primary dark:text-primary hover:underline font-medium mt-auto"
         >
           <Code className="mr-1 h-4 w-4" />
           View on GitHub

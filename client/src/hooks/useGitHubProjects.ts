@@ -17,22 +17,28 @@ export function useGitHubProjects() {
   const { data, isLoading, error } = useQuery<Project[]>({
     queryKey: [`/api/github/${username}/repos`],
     staleTime: 1000 * 60 * 60, // 1 hour
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
   
   const [projects, setProjects] = useState<Project[]>([]);
   
   useEffect(() => {
     if (data) {
-      // Filter out forked repositories and format the projects
-      const filteredProjects = data
-        .filter(repo => !repo.fork)
-        .slice(0, 3)
+      // Format and prepare the projects for display
+      const formattedProjects = data
+        .slice(0, 6) // Show up to 6 projects
         .map(repo => ({
           ...repo,
-          technologies: repo.language ? [repo.language] : []
+          // Use the technologies array if it exists, otherwise use the language
+          technologies: repo.technologies && repo.technologies.length > 0 
+            ? repo.technologies 
+            : repo.language 
+              ? [repo.language] 
+              : []
         }));
       
-      setProjects(filteredProjects);
+      setProjects(formattedProjects);
     }
   }, [data]);
   
