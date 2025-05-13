@@ -92,28 +92,36 @@ export const resumeData = {
   // Certificates
   certificates: [
     {
+      name:"IBM AI Agents",
+      url: "https://skills.yourlearning.ibm.com/certificate/ALM-COURSE_3825456"
+    },
+     {
+      name: "IBM Artificial Intelligence Fundamentals",
+      url: "https://www.credly.com/badges/40e8fa13-bdf3-42dd-ab31-5caa5346d999"
+    },
+    {
       name: "NLP by GUVI",
-      url: "#"
+      url: "https://www.guvi.in/verify-certificate?id=05a75271H7n2Y398t0"
     },
     {
       name: "Kaggle Deep Learning",
-      url: "#"
+      url: "https://www.kaggle.com/learn/certification/divyanshagg27/intro-to-deep-learning"
     },
     {
       name: "Accenture Data Analytics and Visualization",
-      url: "#"
+      url: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Accenture%20North%20America/hzmoNKtzvAzXsEqx8_Accenture%20North%20America_4xpW4mAy3s6Zr4kDR_1713796586780_completion_certificate.pdf"
     },
     {
       name: "Python Zero to Hero by GUVI",
-      url: "#"
+      url: "https://www.guvi.in/verify-certificate?id=Qkvt79215S4769s461"
     },
     {
-      name: "DALL-E AI by GUVI",
-      url: "#"
+      name: "AI Fundamentals",
+      url: "https://www.guvi.in/verify-certificate?id=Us22V2783711i0cOhQ"
     },
     {
       name: "ChatGPT for Programmers by GUVI",
-      url: "#"
+      url: "https://www.guvi.in/verify-certificate?id=FGDb929077hcl341T7"
     }
   ]
 };
